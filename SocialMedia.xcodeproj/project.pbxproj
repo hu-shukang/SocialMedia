@@ -10,6 +10,7 @@
 		75C6E032294F206800484982 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 75C6E031294F206800484982 /* FirebaseStorage */; };
 		75C6E034294F214800484982 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C6E033294F214800484982 /* User.swift */; };
 		75C6E036294F21B700484982 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 75C6E035294F21B700484982 /* FirebaseFirestoreSwift */; };
+		75E5249829505DBF0086C87B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75E5249729505DBE0086C87B /* GoogleService-Info.plist */; };
 		75FCA401294ECA88002416C4 /* SocialMediaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FCA400294ECA88002416C4 /* SocialMediaApp.swift */; };
 		75FCA403294ECA88002416C4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FCA402294ECA88002416C4 /* ContentView.swift */; };
 		75FCA405294ECA8A002416C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75FCA404294ECA8A002416C4 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		75C6E033294F214800484982 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		75E5249729505DBE0086C87B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		75FCA3FD294ECA88002416C4 /* SocialMedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocialMedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75FCA400294ECA88002416C4 /* SocialMediaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialMediaApp.swift; sourceTree = "<group>"; };
 		75FCA402294ECA88002416C4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				75FCA400294ECA88002416C4 /* SocialMediaApp.swift */,
 				75FCA402294ECA88002416C4 /* ContentView.swift */,
 				75FCA404294ECA8A002416C4 /* Assets.xcassets */,
+				75E5249729505DBE0086C87B /* GoogleService-Info.plist */,
 				75FCA406294ECA8A002416C4 /* Preview Content */,
 			);
 			path = SocialMedia;
@@ -207,6 +210,7 @@
 			files = (
 				75FCA408294ECA8A002416C4 /* Preview Assets.xcassets in Resources */,
 				75FCA405294ECA8A002416C4 /* Assets.xcassets in Resources */,
+				75E5249829505DBF0086C87B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
