@@ -74,6 +74,9 @@ struct LoginPage: View {
             userVM.initFileds()
         }
         .alert(userVM.errorMessage, isPresented: $userVM.showError, actions: {})
+        .overlay {
+            Loading(show: $userVM.isLoading)
+        }
     }
 }
 

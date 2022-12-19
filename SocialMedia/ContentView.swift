@@ -12,7 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         if userVM.logStatus {
-            Text("Main View")
+            MainPage()
         } else {
             LoginPage()
         }

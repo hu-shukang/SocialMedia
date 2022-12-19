@@ -22,12 +22,15 @@ class UserViewModel: ObservableObject {
     
     @Published var showError: Bool = false
     @Published var errorMessage: String = ""
+    @Published var isLoading: Bool = false
     
     // MARK: - UserDefaults
     @AppStorage("log_status") var logStatus: Bool = false
     @AppStorage("user_profile_url") var profileURL: String = ""
     @AppStorage("user_name") var userNameStored: String = ""
     @AppStorage("user_uid") var uidStored: String = ""
+    @AppStorage("user_about") var userAboutStored: String = ""
+    @AppStorage("user_bio_link") var userBioLinkStored: String = ""
     
     static let shared = UserViewModel()
     
@@ -59,10 +62,50 @@ class UserViewModel: ObservableObject {
         }
     }
     
+    func loading() async {
+        await MainActor.run(body: {
+            isLoading = true
+            print("DEBUG: start loading")
+        })
+    }
+    
+    func stopLoading() async {
+        await MainActor.run(body: {
+            isLoading = false
+            print("DEBUG: stop loading")
+        })
+    }
+    
+    func fetchUser() async {
+        print("DEBUG: fetch user")
+        do {
+            await loading()
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            let userDoc = Firestore.firestore().collection("users").document(uid)
+            let userData = try await userDoc.getDocument()
+            guard let user = try? userData.data(as: User.self) else { return }
+            await MainActor.run(body: {
+                userNameStored = user.username
+                uidStored = uid
+                profileURL = user.profileURL
+                userAboutStored = user.about
+                userBioLinkStored = user.bioLink
+                logStatus = true
+            })
+            await stopLoading()
+        } catch {
+            await setError(error)
+        }
+    
+    }
+    
     func login() {
         Task {
+            await loading()
             do {
                 try await Auth.auth().signIn(withEmail: email, password: password)
+                await fetchUser()
+                await stopLoading()
             } catch {
                 await setError(error)
             }
@@ -72,12 +115,12 @@ class UserViewModel: ObservableObject {
     func register() {
         closeKeyboard()
         Task {
+            await loading()
             do {
                 // hushukang
                 // s-ko@beat-tech.co.jp
                 // 123456
                 // about me
-                
                 // Step1: Creating firebase account
                 try await Auth.auth().createUser(withEmail: email, password: password)
                 // Step2: Uploading profile photo into firebase storage
@@ -89,16 +132,18 @@ class UserViewModel: ObservableObject {
                 let downloadURL = try await storageRef.downloadURL()
                 // Step4: Creating a user firestore object
                 let user: [String: Any] = ["username": userName, "about": about, "bioLink": bioLink, "uid": uid, "email": email, "profileURL": downloadURL.absoluteString]
-                print(user)
                 // Step5: Saving user doc into firestore database
                 try await Firestore.firestore().collection("users").document(uid).setData(user)
                 await MainActor.run(body: {
                     userNameStored = userName
                     uidStored = uid
                     profileURL = downloadURL.absoluteString
+                    userAboutStored = about
+                    userBioLinkStored = bioLink
                     logStatus = true
                 })
                 print("DEBUG: Register successful")
+                await stopLoading()
             } catch {
                 // Deleteing created account in case of failure
                 print("DEBUG: Register fail")
@@ -120,11 +165,56 @@ class UserViewModel: ObservableObject {
         }
     }
     
+    func logout() {
+        Task {
+            print("DEBUG: logout")
+            try? Auth.auth().signOut()
+            await MainActor.run(body: {
+                userNameStored = ""
+                uidStored = ""
+                profileURL = ""
+                userAboutStored = ""
+                userBioLinkStored = ""
+                logStatus = false
+            })
+        }
+    }
+    
+    func deleteAccount() {
+        Task {
+            print("DEBUG: delete account")
+            await loading()
+            do {
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                // Step1: First deleteing profile image from storage
+                let storageRef = Storage.storage().reference().child("profile_images").child(uid)
+                try await storageRef.delete()
+                // Step2: Deleting firestore user document
+                let userDoc = Firestore.firestore().collection("users").document(uid)
+                try await userDoc.delete()
+                // Step3: Deleting auth account and setting log status to false
+                try await Auth.auth().currentUser?.delete()
+                await stopLoading()
+                await MainActor.run(body: {
+                    userNameStored = ""
+                    uidStored = ""
+                    profileURL = ""
+                    userAboutStored = ""
+                    userBioLinkStored = ""
+                    logStatus = false
+                })
+            } catch {
+                await setError(error)
+            }
+        }
+    }
+    
     func setError(_ error: Error) async {
         await MainActor.run(body: {
             errorMessage = error.localizedDescription
             showError.toggle()
         })
+        await stopLoading()
     }
     
     func closeKeyboard(){

@@ -61,6 +61,9 @@ struct RegisterPage: View {
                 await userVM.selectPhoto(newValue)
             }
         }
+        .overlay {
+            Loading(show: $userVM.isLoading)
+        }
     }
     
     @ViewBuilder
