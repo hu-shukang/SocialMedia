@@ -10,7 +10,7 @@ import SwiftUI
 struct MainPage: View {
     var body: some View {
         TabView {
-            Text("Recent Post's")
+            PostsPage()
                 .tabItem {
                     Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
                     Text("Post's")
